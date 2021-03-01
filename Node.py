@@ -5,7 +5,7 @@ class Node():
     def __init__(self, _start, _end, _tree_reference):
         self.start = _start
         self.end = _end
-        self.link = None
+        self.link = 0
         self.next = {}
         self.Tree_ref = _tree_reference
 
