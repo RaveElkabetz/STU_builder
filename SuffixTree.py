@@ -8,7 +8,7 @@ class SuffixTree(object):
         self.text = None
 
         self.position = -1
-        self.currentNode = 0
+        self.currentNode = -1
         self.need_suffix_link = 0
         self.reminder = 0
 
@@ -57,4 +57,13 @@ class SuffixTree(object):
                 self.add_suffix_link(self.active_node)      # rule number 2
             else:
                 next = self.nodes[self.active_node].next[self.get_active_edge_text()]
+                if self.walk_down(next):        #observ 2
+                    continue
+                if self.text[self.nodes[next].start + self.active_length] == _charecter:
+                    self.active_length += 1
+                    self.add_suffix_link(self.active_node)      #observ 3
+                    break
+                split = self.new_node(self.nodes[next].start, self.nodes[next].start + self.active_length)
+
+
 
