@@ -42,12 +42,12 @@ class SuffixTree(object):
         return False
 
     def new_node(self, _start_int, _end_int):
-        #if self.currentNode == -1:
+        # if self.currentNode == -1:
         #    self.currentNode += 1
-        #temp_current_node = self.currentNode
+        # temp_current_node = self.currentNode
         self.currentNode += 1
-        self.nodes.append( Node(_start_int, _end_int, self))
-        #if self.currentNode >= 0:
+        self.nodes.append(Node(_start_int, _end_int, self))
+        # if self.currentNode >= 0:
 
         return self.currentNode
 
@@ -60,7 +60,6 @@ class SuffixTree(object):
             self.position += 1
 
         self.text.insert(self.position, _charecter)
-
 
         self.need_suffix_link = -1
         self.reminder += 1
@@ -97,3 +96,33 @@ class SuffixTree(object):
                     self.active_node = self.nodes[self.active_node].link
                 else:
                     self.active_node = self.root
+
+    def edge_string(self, _node):
+        temp_str = (self.text + '.')[:-1]  # generate a copy of 'text' and not only reference
+        start = self.nodes[_node].start
+        end = min(self.position + 1,self.nodes[_node].end)
+        return temp_str[start:end]
+
+    def print_the_tree(self):
+        '''
+        print("digraph {");
+        print("\trankdir = LR;");
+        print("\tedge [arrowsize=0.4,fontsize=10]");
+        print("\tnode1 [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.1,height=.1];");
+        print("//------leaves------");
+        printLeaves(root);
+        print("//------internal nodes------");
+        printInternalNodes(root);
+        print("//------edges------");
+        printEdges(root);
+        print("//------suffix links------");
+        printSLinks(root);
+        print("}");'''
+        pass
+
+    def print_the_outter_edges(self,_x):
+        if len(self.nodes[_x].next) == 0:
+            print("\tnode"+x+" [label=\"\",shape=point]")
+        else:
+            for child in self.nodes[_x].next.values():
+                self.print_the_outter_edges(child)
