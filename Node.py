@@ -6,7 +6,7 @@ class Node():
         self.start = _start
         self.end = _end
         self.link = 0
-        self.next = {}
+        self.childrens = {}
         self.Tree_ref = _tree_reference
 
     def edge_length(self):

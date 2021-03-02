@@ -66,12 +66,12 @@ class SuffixTree(object):
         while self.reminder > 0:
             if self.active_length == 0:
                 self.active_edge = self.position
-            if self.get_active_edge_text() not in self.nodes[self.active_node].next:
+            if self.get_active_edge_text() not in self.nodes[self.active_node].childrens:
                 leaf = self.new_node(self.position, oo)  # leaf is an integer
-                self.nodes[self.active_node].next[self.get_active_edge_text()] = leaf
+                self.nodes[self.active_node].childrens[self.get_active_edge_text()] = leaf
                 self.add_suffix_link(self.active_node)  # rule number 2
             else:
-                the_next = self.nodes[self.active_node].next[self.get_active_edge_text()]
+                the_next = self.nodes[self.active_node].childrens[self.get_active_edge_text()]
                 if self.walk_down(the_next):  # observ 2
                     continue
                 if self.text[self.nodes[the_next].start + self.active_length] == _charecter:
@@ -79,11 +79,11 @@ class SuffixTree(object):
                     self.add_suffix_link(self.active_node)  # observ 3
                     break
                 split = self.new_node(self.nodes[the_next].start, self.nodes[the_next].start + self.active_length)
-                self.nodes[split].next[self.get_active_edge_text()] = split
+                self.nodes[split].childrens[self.get_active_edge_text()] = split
                 leaf = self.new_node(self.position, oo)
-                self.nodes[split].next[_charecter] = leaf
+                self.nodes[split].childrens[_charecter] = leaf
                 self.nodes[the_next].start += self.active_length
-                self.nodes[split].next[self.text[self.nodes[the_next].start]] = the_next
+                self.nodes[split].childrens[self.text[self.nodes[the_next].start]] = the_next
                 self.add_suffix_link(split)  # rule number 2
 
             self.reminder -= 1
@@ -98,31 +98,53 @@ class SuffixTree(object):
                     self.active_node = self.root
 
     def edge_string(self, _node):
-        temp_str = (self.text + '.')[:-1]  # generate a copy of 'text' and not only reference
+        #temp_str = (self.text + '.')[:-1]  # generate a copy of 'text' and not only reference
+        temp_str= ""
+        for char in self.text:
+            temp_str += char
         start = self.nodes[_node].start
         end = min(self.position + 1,self.nodes[_node].end)
         return temp_str[start:end]
 
     def print_the_tree(self):
-        '''
+
         print("digraph {");
         print("\trankdir = LR;");
         print("\tedge [arrowsize=0.4,fontsize=10]");
-        print("\tnode1 [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.1,height=.1];");
+        print("\tnode0 [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.1,height=.1];");
         print("//------leaves------");
-        printLeaves(root);
+        self.print_the_outter_nodes(self.root);
         print("//------internal nodes------");
-        printInternalNodes(root);
+        self.print_internal_nodes(self.root);
         print("//------edges------");
-        printEdges(root);
+        self.print_the_edges(self.root);
         print("//------suffix links------");
-        printSLinks(root);
-        print("}");'''
+        self.print_links(self.root);
+        print("}");
         pass
 
-    def print_the_outter_edges(self,_x):
-        if len(self.nodes[_x].next) == 0:
-            print("\tnode"+x+" [label=\"\",shape=point]")
+    def print_the_outter_nodes(self, _y):
+        if len(self.nodes[_y].childrens) == 0:
+            print("\tnode" + str(_y) + " [label=\"\",shape=point]")
         else:
-            for child in self.nodes[_x].next.values():
-                self.print_the_outter_edges(child)
+            for child in self.nodes[_y].childrens.values():
+                self.print_the_outter_nodes(child)
+
+    def print_internal_nodes(self, _y):
+        if _y != self.root and len(self.nodes[_y].childrens) > 0:
+            print("\tnode" + str(_y) + " [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.07,height=.07]")
+
+        for child in self.nodes[_y].childrens.values():
+            self.print_internal_nodes(child)
+
+    def print_the_edges(self,_n):
+        for child in self.nodes[_n].childrens.values():
+            print("\tnode"+str(_n)+" -> node"+str(child)+" [label=\""+str(self.edge_string(child))+"\",weight=3]")
+            self.print_the_edges(child)
+
+    def print_links(self,_l):
+        if self.nodes[_l].link > 0:
+            print("\tnode"+str(_l)+" -> node"+str(self.nodes[_l].link)+" [label=\"\",weight=1,style=dotted]")
+        for child in self.nodes[_l].childrens.values():
+            self.print_links(child)
+
