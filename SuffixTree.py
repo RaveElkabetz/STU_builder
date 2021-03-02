@@ -60,6 +60,7 @@ class SuffixTree(object):
 
         self.text.insert(self.position, _charecter)
 
+
         self.need_suffix_link = -1
         self.reminder += 1
         while self.reminder > 0:
