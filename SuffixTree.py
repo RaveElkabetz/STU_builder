@@ -8,7 +8,7 @@ class SuffixTree(object):
     def __init__(self, _length):
         # self.nodes = None
         # self.text = None
-        self.nodes = [2 * _length + 2]
+        self.nodes = []
         self.text = []
         self.position = -1
         self.currentNode = -1
@@ -42,12 +42,13 @@ class SuffixTree(object):
         return False
 
     def new_node(self, _start_int, _end_int):
-        if self.currentNode == -1:
-            self.currentNode += 1
-        temp_current_node = self.currentNode
+        #if self.currentNode == -1:
+        #    self.currentNode += 1
+        #temp_current_node = self.currentNode
+        self.currentNode += 1
         self.nodes.append( Node(_start_int, _end_int, self))
-        if self.currentNode >= 0:
-            self.currentNode += 1
+        #if self.currentNode >= 0:
+
         return self.currentNode
 
     def add_char(self, _charecter):

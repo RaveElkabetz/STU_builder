@@ -3,7 +3,7 @@ from graphviz import Digraph
 
 class St(object):
     def __init__(self):
-        str_input = "ravvve"
+        str_input = "abb$"
         str_length = len(str_input)
         '''here we will init the gui '''
         self.StRef = SuffixTree(str_length)
