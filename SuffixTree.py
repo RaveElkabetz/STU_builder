@@ -5,9 +5,10 @@ oo = (sys.maxsize * 2 + 1) / 2
 
 
 class SuffixTree(object):
-    def __init__(self, _length):
+    def __init__(self, _length,_input_string):
         # self.nodes = None
         # self.text = None
+        self.input_string = _input_string
         self.nodes = []
         self.text = []
         self.position = -1
@@ -33,6 +34,9 @@ class SuffixTree(object):
     def get_active_edge_text(self):
         return self.text[self.active_edge]
 
+    def get_edge_text_by_node_num(self,_num):
+       return self.input_string[self.nodes[_num].start]
+
     def walk_down(self, _next_int):
         if self.active_length >= self.nodes[_next_int].edge_length():
             self.active_edge += self.nodes[_next_int].edge_length()
@@ -46,7 +50,7 @@ class SuffixTree(object):
         #    self.currentNode += 1
         # temp_current_node = self.currentNode
         self.currentNode += 1
-        self.nodes.append(Node(_start_int, _end_int, self))
+        self.nodes.append(Node(_start_int, _end_int, self, self.currentNode))
         # if self.currentNode >= 0:
 
         return self.currentNode
@@ -62,24 +66,29 @@ class SuffixTree(object):
         self.text.insert(self.position, _charecter)
 
         self.need_suffix_link = -1
-        self.reminder += 1
+        self.reminder += 1      #how many suffixes left to add to the tree
         while self.reminder > 0:
             if self.active_length == 0:
                 self.active_edge = self.position
             if self.get_active_edge_text() not in self.nodes[self.active_node].childrens:
                 leaf = self.new_node(self.position, oo)  # leaf is an integer
-                self.nodes[self.active_node].childrens[self.get_active_edge_text()] = leaf
+                self.nodes[self.active_node].childrens[self.get_active_edge_text()] = leaf  #adding a node to the active node(as a child)
                 self.add_suffix_link(self.active_node)  # rule number 2
-            else:
+            else:                                       # in case there is a repeated charecter as an input
                 the_next = self.nodes[self.active_node].childrens[self.get_active_edge_text()]
-                if self.walk_down(the_next):  # observ 2
+                if self.walk_down(the_next):  # observ 2, 'the_next' node is a leaf
                     continue
                 if self.text[self.nodes[the_next].start + self.active_length] == _charecter:
-                    self.active_length += 1
+                    self.active_length += 1                 # <-- setting where the split will be
                     self.add_suffix_link(self.active_node)  # observ 3
                     break
+                '''we get here if we need to split the edge:'''
                 split = self.new_node(self.nodes[the_next].start, self.nodes[the_next].start + self.active_length)
-                self.nodes[split].childrens[self.get_active_edge_text()] = split
+                self.nodes[split].childrens[self.get_active_edge_text()] = split    #consider to add the childs to a node that we save when we find a repitition
+                #----------------------------------
+                self.nodes[self.active_node].childrens.pop(self.get_edge_text_by_node_num(the_next))        #the node that we need to add to the childrens of root is split, and remove: 'the_next' from childs
+                self.nodes[self.active_node].childrens.update({self.text[self.nodes[split].start]:split})
+                #----------------------------------
                 leaf = self.new_node(self.position, oo)
                 self.nodes[split].childrens[_charecter] = leaf
                 self.nodes[the_next].start += self.active_length
@@ -96,6 +105,9 @@ class SuffixTree(object):
                     self.active_node = self.nodes[self.active_node].link
                 else:
                     self.active_node = self.root
+
+
+
 
     def edge_string(self, _node):
         #temp_str = (self.text + '.')[:-1]  # generate a copy of 'text' and not only reference
