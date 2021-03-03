@@ -23,29 +23,32 @@ class St(object):
         the_string_input = tk.Label(self.root)
         the_string_input.pack()
         self.canvas.pack()
-
+        self.root.mainloop()
         #---------------------------------------------------------------
-        file1 = open("st.dot", "a+")
 
-        str_length = len(self.str_input)
+
+
         '''here we will init the gui '''
-        self.StRef = SuffixTree(str_length,self.str_input,file1)
+
+
+    def click_me(self):
+        file1 = open("st.dot", "a+")
+        self.str_input = self.string_entered.get()
+        self.string_entered.delete(0, 10000000)
+        print(self.str_input)
+        str_length = len(self.str_input)
+        self.StRef = SuffixTree(str_length, self.str_input, file1)
         for indx in range(str_length):
             self.StRef.add_char(self.str_input[indx])
         i = 0
         for node in self.StRef.nodes:
-            i+=1
+            i += 1
             if node.node_id in node.childrens.values():
                 node.childrens.pop(self.StRef.text[node.start])
-        print("hi2")
-        self.StRef.print_the_tree()
-        self.root.mainloop()
-        file1.close()
 
-    def click_me(self):
-        self.str_input = self.string_entered.get()
-        self.string_entered.delete(0, 10000000)
-        print(self.str_input)
+        self.StRef.print_the_tree()
+
+        file1.close()
 
 
 
