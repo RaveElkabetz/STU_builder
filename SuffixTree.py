@@ -5,7 +5,7 @@ oo = (sys.maxsize * 2 + 1) / 2
 
 
 class SuffixTree(object):
-    def __init__(self, _length,_input_string):
+    def __init__(self, _length,_input_string,_file_ref):
         # self.nodes = None
         # self.text = None
         self.input_string = _input_string
@@ -15,7 +15,7 @@ class SuffixTree(object):
         self.currentNode = -1
         self.need_suffix_link = 0
         self.reminder = 0
-
+        self.file_ref = _file_ref
         self.active_length = 0
         self.active_edge = 0
         # self.nodeRef = Node(0, 0, self)
@@ -120,43 +120,43 @@ class SuffixTree(object):
 
     def print_the_tree(self):
 
-        print("digraph {");
-        print("\trankdir = LR;");
-        print("\tedge [arrowsize=0.4,fontsize=10]");
-        print("\tnode0 [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.1,height=.1];");
-        print("//------leaves------");
-        self.print_the_outter_nodes(self.root);
-        print("//------internal nodes------");
-        self.print_internal_nodes(self.root);
-        print("//------edges------");
-        self.print_the_edges(self.root);
-        print("//------suffix links------");
-        self.print_links(self.root);
-        print("}");
-        pass
+        self.file_ref.write("digraph {\n")
+        self.file_ref.write("\trankdir = LR;\n")
+        self.file_ref.write("\tedge [arrowsize=0.4,fontsize=10]\n")
+        self.file_ref.write("\tnode0 [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.1,height=.1];\n")
+        self.file_ref.write("//------leaves------\n")
+        self.print_the_outter_nodes(self.root)
+        self.file_ref.write("//------internal nodes------\n")
+        self.print_internal_nodes(self.root)
+        self.file_ref.write("//------edges------\n")
+        self.print_the_edges(self.root)
+        self.file_ref.write("//------suffix links------\n")
+        self.print_links(self.root)
+        self.file_ref.write("}")
+
 
     def print_the_outter_nodes(self, _y):
         if len(self.nodes[_y].childrens) == 0:
-            print("\tnode" + str(_y) + " [label=\"\",shape=point]")
+            self.file_ref.write("\tnode" + str(_y) + " [label=\"\",shape=point]\n")
         else:
             for child in self.nodes[_y].childrens.values():
                 self.print_the_outter_nodes(child)
 
     def print_internal_nodes(self, _y):
         if _y != self.root and len(self.nodes[_y].childrens) > 0:
-            print("\tnode" + str(_y) + " [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.07,height=.07]")
+            self.file_ref.write("\tnode" + str(_y) + " [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.07,height=.07]\n")
 
         for child in self.nodes[_y].childrens.values():
             self.print_internal_nodes(child)
 
     def print_the_edges(self,_n):
         for child in self.nodes[_n].childrens.values():
-            print("\tnode"+str(_n)+" -> node"+str(child)+" [label=\""+str(self.edge_string(child))+"\",weight=3]")
+            self.file_ref.write("\tnode"+str(_n)+" -> node"+str(child)+" [label=\""+str(self.edge_string(child))+"\",weight=3]\n")
             self.print_the_edges(child)
 
     def print_links(self,_l):
         if self.nodes[_l].link > 0:
-            print("\tnode"+str(_l)+" -> node"+str(self.nodes[_l].link)+" [label=\"\",weight=1,style=dotted]")
+            self.file_ref.write("\tnode"+str(_l)+" -> node"+str(self.nodes[_l].link)+" [label=\"\",weight=1,style=dotted]\n")
         for child in self.nodes[_l].childrens.values():
             self.print_links(child)
 
