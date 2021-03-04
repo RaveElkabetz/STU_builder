@@ -17,7 +17,7 @@ class St(object):
         self.string_entered = tk.Entry(self.root, width=30)
         self.string_entered.pack()
 
-        button = tk.Button(self.root, text="Output the tree", command=self.click_me)
+        button = tk.Button(self.root, text="Build the tree", command=self.click_me)
         button.pack()
 
         the_string_input = tk.Label(self.root)
@@ -32,8 +32,9 @@ class St(object):
 
 
     def click_me(self):
-        file1 = open("st.dot", "a+")
+        file1 = open("suffix.dot", "a+")
         self.str_input = self.string_entered.get()
+        self.str_input += "$"
         self.string_entered.delete(0, 10000000)
         print(self.str_input)
         str_length = len(self.str_input)
@@ -47,8 +48,18 @@ class St(object):
                 node.childrens.pop(self.StRef.text[node.start])
 
         self.StRef.print_the_tree()
+        pattern_label = tk.Label(self.root, text="Enter pattern to search:")
+        pattern_label.pack()
+        pattern_input = tk.Entry(self.root, width=30)
+        pattern_input.pack()
+        self.pattern_to_search = pattern_input.get()
+        self.num_of_ocurrense=self.search_the_pattern()
 
         file1.close()
+
+
+    def search_the_pattern(self):
+        pass
 
 
 
