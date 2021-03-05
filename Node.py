@@ -1,5 +1,4 @@
 import sys
-oo = (sys.maxsize * 2 + 1) / 2
 
 class Node():
     def __init__(self, _start, _end, _tree_reference,_node_id):

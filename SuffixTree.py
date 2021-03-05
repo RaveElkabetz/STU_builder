@@ -1,15 +1,11 @@
 from Node import Node
 import sys
 
-
-
-
-oo = (sys.maxsize * 2 + 1) / 2
-
+infinite = (sys.maxsize * 2 + 1) / 2
 
 
 class SuffixTree(object):
-    def __init__(self, _length,_input_string,_file_ref):
+    def __init__(self, _length, _input_string, _file_ref):
         # self.nodes = None
         # self.text = None
         self.input_string = _input_string
@@ -38,8 +34,8 @@ class SuffixTree(object):
     def get_active_edge_text(self):
         return self.text[self.active_edge]
 
-    def get_edge_text_by_node_num(self,_num):
-       return self.input_string[self.nodes[_num].start]
+    def get_edge_text_by_node_num(self, _num):
+        return self.input_string[self.nodes[_num].start]
 
     def walk_down(self, _next_int):
         if self.active_length >= self.nodes[_next_int].edge_length():
@@ -70,31 +66,34 @@ class SuffixTree(object):
         self.text.insert(self.position, _charecter)
 
         self.need_suffix_link = -1
-        self.reminder += 1      #how many suffixes left to add to the tree
+        self.reminder += 1  # how many suffixes left to add to the tree
         while self.reminder > 0:
             if self.active_length == 0:
                 self.active_edge = self.position
             if self.get_active_edge_text() not in self.nodes[self.active_node].childrens:
-                leaf = self.new_node(self.position, oo)  # leaf is an integer
-                self.nodes[self.active_node].childrens[self.get_active_edge_text()] = leaf  #adding a node to the active node(as a child)
+                leaf = self.new_node(self.position, infinite)  # leaf is an integer
+                self.nodes[self.active_node].childrens[
+                    self.get_active_edge_text()] = leaf  # adding a node to the active node(as a child)
                 self.add_suffix_link(self.active_node)  # rule number 2
-            else:                                       # in case there is a repeated charecter as an input
+            else:  # in case there is a repeated charecter as an input
                 the_next = self.nodes[self.active_node].childrens[self.get_active_edge_text()]
                 if self.walk_down(the_next):  # observ 2, 'the_next' node is a leaf
                     continue
                 if self.text[self.nodes[the_next].start + self.active_length] == _charecter:
-                    self.active_length += 1                 # <-- setting where the split will be
+                    self.active_length += 1  # <-- setting where the split will be
                     self.add_suffix_link(self.active_node)  # observ 3
                     break
                 '''we got here if we need to split the edge:'''
                 split = self.new_node(self.nodes[the_next].start, self.nodes[the_next].start + self.active_length)
-                #self.nodes[split].childrens[self.get_active_edge_text()] = split    #consider to add the childs to a node that we save when we find a repitition
-                #if self.nodes[split].chidrens[self.get_active_edge_text()] ==
-                #----------------------------------
-                self.nodes[self.active_node].childrens.pop(self.get_edge_text_by_node_num(the_next))        #the node that we need to add to the childrens of root is split, and remove: 'the_next' from childs
-                self.nodes[self.active_node].childrens.update({self.text[self.nodes[split].start]:split})   #put [the_next] insted of split : the_next
-                #----------------------------------                                                         #before: in the update func parantesies- {self.text[self.nodes[split].start]:split}
-                leaf = self.new_node(self.position, oo)
+                # self.nodes[split].childrens[self.get_active_edge_text()] = split    #consider to add the childs to a node that we save when we find a repitition
+                # if self.nodes[split].chidrens[self.get_active_edge_text()] ==
+                # ----------------------------------
+                self.nodes[self.active_node].childrens.pop(self.get_edge_text_by_node_num(
+                    the_next))  # the node that we need to add to the childrens of root is split, and remove: 'the_next' from childs
+                self.nodes[self.active_node].childrens.update(
+                    {self.text[self.nodes[split].start]: split})  # put [the_next] insted of split : the_next
+                # ----------------------------------                                                         #before: in the update func parantesies- {self.text[self.nodes[split].start]:split}
+                leaf = self.new_node(self.position, infinite)
                 self.nodes[split].childrens[_charecter] = leaf
                 self.nodes[the_next].start += self.active_length
                 self.nodes[split].childrens[self.text[self.nodes[the_next].start]] = the_next
@@ -111,16 +110,15 @@ class SuffixTree(object):
                 else:
                     self.active_node = self.root
 
-
-#__________________________________printing methods:______________________________________________
+    # __________________________________printing methods:______________________________________________
 
     def edge_string(self, _node):
-        #temp_str = (self.text + '.')[:-1]  # generate a copy of 'text' and not only reference
-        temp_str= ""
+        # temp_str = (self.text + '.')[:-1]  # generate a copy of 'text' and not only reference
+        temp_str = ""
         for char in self.text:
             temp_str += char
         start = self.nodes[_node].start
-        end = min(self.position + 1,self.nodes[_node].end)
+        end = min(self.position + 1, self.nodes[_node].end)
         return temp_str[start:end]
 
     def print_the_tree(self):
@@ -139,36 +137,29 @@ class SuffixTree(object):
         self.print_links(self.root)
         self.file_ref.write("}")
 
-
-
-    def print_the_outter_nodes(self,_root):
+    def print_the_outter_nodes(self, _root):
         for node in self.nodes:
             if len(node.childrens) == 0:
                 self.file_ref.write("\tnode" + str(node.node_id) + " [label=\"\",shape=point]\n")
 
-
-
     def print_internal_nodes(self, _y):
         for node in self.nodes:
             if len(node.childrens) > 0:
-                self.file_ref.write("\tnode" + str(node.node_id) + " [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.07,height=.07]\n")
+                self.file_ref.write("\tnode" + str(
+                    node.node_id) + " [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.07,height=.07]\n")
 
-
-
-    def print_the_edges(self,_n):
+    def print_the_edges(self, _n):
         for node in self.nodes:
             if len(node.childrens) > 0:
                 for child in node.childrens.values():
                     self.file_ref.write("\tnode" + str(node.node_id) + " -> node" + str(child) + " [label=\"" +
                                         str(self.edge_string(child)) + "\",weight=3]\n")
 
-
-
-    def print_links(self,_l):
+    def print_links(self, _l):
         if self.nodes[_l].link > 0:
-            self.file_ref.write("\tnode"+str(_l)+" -> node"+str(self.nodes[_l].link)+" [label=\"\",weight=1,style=dotted]\n")
+            self.file_ref.write(
+                "\tnode" + str(_l) + " -> node" + str(self.nodes[_l].link) + " [label=\"\",weight=1,style=dotted]\n")
         for child in self.nodes[_l].childrens.values():
             if child == self.nodes[_l].node_id:
                 continue
             self.print_links(child)
-
