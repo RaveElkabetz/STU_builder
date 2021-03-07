@@ -6,6 +6,8 @@ import os
 
 class STU(object):
     def __init__(self):
+        self.new_tree_was_built_flag=0
+        self.img_label = None
         self.current_str_proccesed = ""
         self.how_many_trees = 0
         self.file1 = None
@@ -13,7 +15,7 @@ class STU(object):
         #-----------------------------------------------------
         self.root = tk.Tk()
         self.root.minsize(1000, 800)
-        self.canvas = tk.Canvas(self.root, width=500, height=300)
+
 
         self.header_label = tk.Label(self.root,text="Ukonnens Suffix Tree Builder:")
         self.header_label.config(font=("Raleway",25))
@@ -21,7 +23,7 @@ class STU(object):
 
         self.string_entered = tk.Entry(self.root, width=30)
         self.string_entered.pack()
-
+        self.show_the_tree_button = tk.Button(self.root, text= "show the tree", command=self.click_and_show)
         button = tk.Button(self.root, text="Build the tree", command=self.click_me)
         button.pack()
         self.current_str_proccesed_label = tk.Label(self.root, text=self.current_str_proccesed)
@@ -35,10 +37,18 @@ class STU(object):
 
 
 
-
-
+    def click_and_show(self):
+        if self.new_tree_was_built_flag == 0:
+            return
+        self.img = ImageTk.PhotoImage(Image.open(self.img_path))
+        self.img_label = tk.Label(image=self.img)
+        self.img_label.pack()
+        self.new_tree_was_built_flag = 0
 
     def click_me(self):
+        self.new_tree_was_built_flag = 1
+        if self.img_label != None:
+            self.img_label.destroy()
         self.how_many_trees += 1
         file_path = "suffix" + str(self.how_many_trees) + ".dot"
         self.file1 = open(file_path, "a+")
@@ -47,11 +57,11 @@ class STU(object):
         self.string_entered.delete(0, 10000000)
         print(self.str_input)
         self.current_str_proccesed_label.config(text=self.str_input,font=("Raleway",18) )
-        str_length = len(self.str_input)
-        send_this_str =self.str_input + "$"
+        send_this_str = self.str_input + "$"
+        str_length = len(send_this_str)
         self.StRef = SuffixTree(str_length, send_this_str, self.file1)
         for indx in range(str_length):
-            self.StRef.add_char(self.str_input[indx])
+            self.StRef.add_char(send_this_str[indx])
         i = 0
         for node in self.StRef.nodes:
             i += 1
@@ -63,12 +73,15 @@ class STU(object):
         os.popen(what_to_run)
         self.file1.close()
 
-        self.canvas.pack()
 
-        imp_path = "suffix" + str(self.how_many_trees) + ".dot.png"
-        img = ImageTk.PhotoImage(Image.open("suffix1.dot.2.png"))
-        my_label = tk.Label(image=img)
-        my_label.pack()
+        #כדאי פשוט להוסיף לחצן שאחרי לחיצה שלו, הו יוצג רק לאחר בניית העץ והוצאת הפךט של התמונה, רק אז יופיע כפתור שאחרי לחיצה
+        #יחפש את התמונה וינסה לפתוח אולי try & catch
+
+        self.img_path = "suffix" + str(self.how_many_trees) + ".dot.png"
+#        img = ImageTk.PhotoImage(Image.open("suffix1.dot.2.png"))
+#        my_label = tk.Label(image=img)
+#        my_label.pack()
+        self.show_the_tree_button.pack()
 
 
 
