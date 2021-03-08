@@ -125,8 +125,8 @@ class SuffixTree(object):
 
         self.file_ref.write("digraph {\n")
         self.file_ref.write("\trankdir = LR;\n")
-        self.file_ref.write("\tedge [arrowsize=0.4,fontsize=10]\n")
-        self.file_ref.write("\tnode0 [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.1,height=.1];\n")
+        self.file_ref.write("\tedge [arrowsize=0.6,fontsize=18]\n")
+        self.file_ref.write("\tnode0 [label=\"\",style=filled,fillcolor=red,shape=circle,width=.1,height=.1];\n")
         self.file_ref.write("//------leaves------\n")
         self.print_the_outter_nodes(self.root)
         self.file_ref.write("//------internal nodes------\n")
@@ -146,14 +146,14 @@ class SuffixTree(object):
         for node in self.nodes:
             if len(node.childrens) > 0:
                 self.file_ref.write("\tnode" + str(
-                    node.node_id) + " [label=\"\",style=filled,fillcolor=lightgrey,shape=circle,width=.07,height=.07]\n")
+                    node.node_id) + " [label=\"\",style=filled,fillcolor=blue,shape=circle,width=.07,height=.07]\n")
 
     def print_the_edges(self, _n):
         for node in self.nodes:
             if len(node.childrens) > 0:
                 for child in node.childrens.values():
                     self.file_ref.write("\tnode" + str(node.node_id) + " -> node" + str(child) + " [label=\"" +
-                                        str(self.edge_string(child)) + "\",weight=3]\n")
+                                        str(self.edge_string(child)) + "\",weight=25]\n")
 
     def print_links(self, _l):
         if self.nodes[_l].link > 0:

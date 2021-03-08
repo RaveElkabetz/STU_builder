@@ -14,6 +14,8 @@ class STU(object):
         #-----------------------------------------------------
         self.root = tk.Tk()
         self.root.minsize(1000, 800)
+        self.root.title("Ukkonen Suffix Tree App")
+        self.root.iconbitmap('graph.ico')
 
 
         self.header_label = tk.Label(self.root,text="Ukonnens Suffix Tree Builder:")
