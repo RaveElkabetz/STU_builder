@@ -92,7 +92,7 @@ class SuffixTree(object):
                     the_next))  # the node that we need to add to the childrens of root is split, and remove: 'the_next' from childs
                 self.nodes[self.active_node].childrens.update(
                     {self.text[self.nodes[split].start]: split})  # put [the_next] insted of split : the_next
-                # ----------------------------------                                                         #before: in the update func parantesies- {self.text[self.nodes[split].start]:split}
+                # ----------------------------------
                 leaf = self.new_node(self.position, infinite)
                 self.nodes[split].childrens[_charecter] = leaf
                 self.nodes[the_next].start += self.active_length

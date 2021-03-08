@@ -1,7 +1,6 @@
 from SuffixTree import SuffixTree
 from PIL import ImageTk,Image
 import tkinter as tk
-import subprocess
 import os
 
 class STU(object):
@@ -74,13 +73,7 @@ class STU(object):
         self.file1.close()
 
 
-        #כדאי פשוט להוסיף לחצן שאחרי לחיצה שלו, הו יוצג רק לאחר בניית העץ והוצאת הפךט של התמונה, רק אז יופיע כפתור שאחרי לחיצה
-        #יחפש את התמונה וינסה לפתוח אולי try & catch
-
         self.img_path = "suffix" + str(self.how_many_trees) + ".dot.png"
-#        img = ImageTk.PhotoImage(Image.open("suffix1.dot.2.png"))
-#        my_label = tk.Label(image=img)
-#        my_label.pack()
         self.show_the_tree_button.pack()
 
 

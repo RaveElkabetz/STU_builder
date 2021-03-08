@@ -14,6 +14,3 @@ class Node():
 
     def set_link(self, _node_int):
         self.link = _node_int
-
-
-
